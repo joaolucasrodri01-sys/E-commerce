@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* REMOVEMOS O BLOCO @media (prefers-color-scheme: dark) */
+/* Isso garante que o site não mude de cor sozinho */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ajuste para garantir que o Carrinho sempre tenha fundo branco */
+.cart-panel {
+  background-color: #ffffff !important;
+  color: #171717 !important;
+}
