@@ -4,126 +4,133 @@ import { allProducts } from "./data/products";
 import { useCart } from "./context/CartContext"; 
 import ProductCard from "./components/ProductCard";
 import Cart from "./components/Cart";
+import Navbar from "./components/Navbar";
+import FavoritesModal from "./components/FavoritesModal";
+import Footer from "./components/Footer";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("todos");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isFavOpen, setIsFavOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); 
+  
   const { cart } = useCart() as any; 
 
-  const filteredProducts = useMemo(() => {
-    // Se for "todos", mostra tudo exceto as ofertas (que ficam na seção de baixo)
-    if (activeTab === "todos") {
-      return allProducts.filter(p => p.category !== "ofertas");
-    }
-    // Caso contrário, filtra pela categoria exata (ex: "feminino")
-    return allProducts.filter(p => p.category === activeTab);
-  }, [activeTab]);
+  // Função de limpeza total
+  const superNormalize = (text: string) => {
+    return text?.toString()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Tira acentos
+      .replace(/\s+/g, '')             // Tira espaços
+      .trim() || "";
+  };
 
+  const filteredProducts = useMemo(() => {
+    return allProducts.filter((product) => {
+      const prodCat = superNormalize(product.category);
+      const prodName = superNormalize(product.name);
+      const tabActive = superNormalize(activeTab);
+      const search = superNormalize(searchQuery);
+
+      // 1. Filtro de Busca (Input da Navbar)
+      const matchesSearch = prodName.includes(search);
+
+      // 2. Lógica de Categoria (CORRIGIDA)
+      let matchesCategory = false;
+
+      // Se a aba for "todos", matchesCategory é sempre true
+      if (tabActive === "todos" || tabActive === "todo") {
+        matchesCategory = true;
+      } else {
+        // Verifica se a categoria do produto bate com a aba
+        const categoryMatch = prodCat.includes(tabActive) || tabActive.includes(prodCat);
+        
+        // Regra especial para Moletom (Caso o cadastro esteja como Hoodie, Blusa, etc)
+        const isMoletomSpecial = tabActive === "moletom" && (
+          prodName.includes("moletom") || 
+          prodName.includes("hoodie") || 
+          prodName.includes("blusa") ||
+          prodCat.includes("moletom")
+        );
+
+        matchesCategory = categoryMatch || isMoletomSpecial;
+      }
+
+      // 3. Regra de Promoção: 
+      // Na aba 'todos', não mostramos o que é estritamente 'ofertas' para não duplicar com a seção de baixo
+      // Mas se o usuário estiver na aba 'ofertas', aí sim mostramos.
+      const isNotPromoOnHome = product.category !== "ofertas" || tabActive === "ofertas" || tabActive === "oferta";
+
+      return matchesCategory && matchesSearch && isNotPromoOnHome;
+    });
+  }, [activeTab, searchQuery]);
+
+  // Produtos que vão para a seção de Ofertas no fim da página
   const promoProducts = useMemo(() => {
     return allProducts.filter(p => p.category === "ofertas");
   }, []);
 
-  // ADICIONADO: Categoria "feminino" na lista de abas
-  const categories = [
-    { id: "todos", label: "Tudo" },
-    { id: "tenis", label: "Tênis" },
-    { id: "feminino", label: "Feminino" }, // Nova aba!
-    { id: "roupas", label: "Roupas" },
-    { id: "calcas", label: "Calças" },
-    { id: "acessorios", label: "Acessórios" },
-  ];
-
   return (
-    <main className="min-h-screen bg-[#fcfcfc] pb-20">
-      {/* NAVBAR */}
-      <nav className="fixed top-0 w-full z-[100] bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-5">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setActiveTab("todos")}>
-            <div className="bg-black text-white w-10 h-10 flex items-center justify-center rounded-xl font-black shadow-xl group-hover:scale-110 transition-transform duration-500">
-              S
-            </div>
-            <span className="font-black text-2xl tracking-tighter italic uppercase text-black">
-              Original<span className="text-orange-500 font-black">Street</span>
-            </span>
-          </div>
-
-          <button 
-            onClick={() => setIsCartOpen(true)}
-            className="relative p-3.5 bg-black text-white rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-2xl shadow-black/20 group"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
-            </svg>
-
-            {cart.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center border-[3px] border-white shadow-lg animate-in zoom-in duration-300">
-                {cart.length}
-              </span>
-            )}
-          </button>
-        </div>
-      </nav>
+    <main className="min-h-screen bg-[#fcfcfc] flex flex-col">
+      <Navbar 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        setIsCartOpen={() => setIsCartOpen(true)}
+        setIsFavOpen={() => setIsFavOpen(true)}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
 
       <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <FavoritesModal isOpen={isFavOpen} onClose={() => setIsFavOpen(false)} />
 
-      <div className="max-w-7xl mx-auto pt-36 px-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-          <div className="animate-in slide-in-from-left duration-700">
-            <p className="text-[10px] font-bold text-orange-500 uppercase tracking-[0.4em] mb-2 italic">Coleção 2026</p>
-            <h1 className="text-7xl md:text-8xl font-black text-zinc-900 leading-[0.85] uppercase italic tracking-tighter">
-              {activeTab === "feminino" ? "For " : "New "} 
-              <br /> 
-              <span className="text-orange-500">{activeTab === "feminino" ? "Girls" : "Drop"}</span>
-            </h1>
-          </div>
-
-          {/* FILTROS DE CATEGORIA */}
-          <div className="flex flex-wrap gap-2 bg-zinc-100/80 p-1.5 rounded-[24px] backdrop-blur-sm shadow-inner overflow-x-auto no-scrollbar">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveTab(cat.id)}
-                className={`px-8 py-3.5 rounded-[20px] text-[10px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
-                  activeTab === cat.id
-                    ? "bg-white text-black shadow-xl scale-105"
-                    : "text-zinc-400 hover:text-zinc-600"
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
+      <div className="max-w-7xl mx-auto pt-44 px-6 flex-grow w-full"> 
+        
+        {/* HEADER DINÂMICO */}
+        <div className="mb-16 animate-in slide-in-from-left duration-700">
+          <p className="text-[10px] font-bold text-orange-500 uppercase tracking-[0.4em] mb-2 italic">Coleção 2026</p>
+          <h1 className="text-7xl md:text-8xl font-black text-zinc-900 leading-[0.85] uppercase italic tracking-tighter">
+            {searchQuery ? "Search" : (activeTab === "feminino" ? "For " : "New ")} 
+            <br /> 
+            <span className="text-orange-500">
+              {searchQuery ? "Result" : 
+               activeTab === "todos" ? "Drop" : activeTab}
+            </span>
+          </h1>
         </div>
 
-        {/* GRID DE PRODUTOS FILTRADOS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
+        {/* GRADE DE PRODUTOS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 mb-20">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
+          
           {filteredProducts.length === 0 && (
-            <p className="col-span-full text-center py-20 text-zinc-400 font-bold uppercase italic text-xs">
-              Nenhum produto encontrado nesta categoria.
-            </p>
+            <div className="col-span-full text-center py-32 bg-zinc-50 rounded-[40px] border-2 border-dashed border-zinc-100">
+              <p className="text-zinc-400 font-black uppercase italic text-[10px] tracking-widest">
+                Nenhum drop encontrado.
+              </p>
+            </div>
           )}
         </div>
 
-        {/* SEÇÃO DE OFERTAS (Só aparece na aba "Tudo") */}
-        {activeTab === "todos" && promoProducts.length > 0 && (
-          <div className="mt-32 border-t border-zinc-100 pt-20">
-            <div className="mb-12">
-              <h2 className="text-4xl font-black italic uppercase tracking-tighter">
-                Ofertas <span className="text-orange-500">Imperdíveis</span>
-              </h2>
-              <div className="h-1.5 w-20 bg-black mt-2"></div>
-            </div>
+        {/* SEÇÃO DE OFERTAS (SÓ APARECE NA HOME 'TODOS') */}
+        {activeTab === "todos" && !searchQuery && promoProducts.length > 0 && (
+          <div className="mt-10 mb-32 border-t border-zinc-100 pt-20">
+            <h2 className="text-4xl font-black italic uppercase tracking-tighter mb-12">
+              Ofertas <span className="text-orange-500">Imperdíveis</span>
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {promoProducts.map((product) => (
+              {promoProducts.slice(0, 3).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           </div>
         )}
       </div>
+
+      <Footer />
     </main>
   );
 }

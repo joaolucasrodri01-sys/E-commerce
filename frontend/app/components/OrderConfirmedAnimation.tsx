@@ -12,7 +12,6 @@ export default function OrderConfirmedAnimation({ isVisible, onComplete }: Props
   const { cart, cartTotal, clearCart } = useCart() as any;
   const [step, setStep] = useState(1);
 
-  // Efeito para mudar do "Caminhão" para a "Confirmação"
   useEffect(() => {
     if (isVisible) {
       setStep(1);
@@ -24,9 +23,9 @@ export default function OrderConfirmedAnimation({ isVisible, onComplete }: Props
   }, [isVisible]);
 
   const handleWhatsAppClick = () => {
-    const numeroWhats = "5511999999999"; // Substitua pelo seu número real
-    
-    // FORMATANDO A LISTA COM COR E TAMANHO
+    // COLOQUE SEU NÚMERO AQUI (Ex: 55 + DDD + NUMERO)
+    const numeroWhats = "5511999999999"; 
+   
     const listaProdutos = cart.map((i: any) => 
       `• *${i.name}*\n  🎨 Cor: ${i.selectedColor || "Padrão"}\n  📏 Tam: ${i.selectedSize || "N/A"}`
     ).join('\n\n');
@@ -39,7 +38,6 @@ export default function OrderConfirmedAnimation({ isVisible, onComplete }: Props
 
     window.open(`https://wa.me/${numeroWhats}?text=${encodeURIComponent(textoMensagem)}`, "_blank");
     
-    // Limpa o carrinho e fecha a animação
     clearCart();
     onComplete();
   };
@@ -69,9 +67,12 @@ export default function OrderConfirmedAnimation({ isVisible, onComplete }: Props
                   initial={{ x: -1200 }}
                   animate={{ x: [-1200, 0, 0, 1500] }}
                   transition={{ duration: 4.5, times: [0, 0.2, 0.8, 1], ease: "easeInOut" }}
-                  className="text-[120px] z-20"
+                  className="text-[120px] z-20 select-none"
                 >
-                  🚚💨
+                  {/* O scale-x-[-1] faz o caminhão olhar para a DIREITA */}
+                  <div className="inline-block scale-x-[-1]">
+                    🚚💨
+                  </div>
                 </motion.div>
                 <div className="absolute bottom-10 w-full h-1 bg-zinc-100"></div>
               </div>
@@ -100,7 +101,7 @@ export default function OrderConfirmedAnimation({ isVisible, onComplete }: Props
                 </svg>
               </div>
 
-              <motion.h2 className="text-4xl font-black text-zinc-900 uppercase italic tracking-tighter mb-4 z-10 leading-none">
+              <motion.h2 className="text-4xl font-black text-zinc-900 uppercase italic tracking-tighter mb-4 z-10 leading-none text-center">
                 Pronto, <br/><span className="text-orange-500 italic">Drop Garantido!</span>
               </motion.h2>
               

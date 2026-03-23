@@ -1,19 +1,21 @@
 "use client";
 import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoritesContext"; // Importando o contexto de favoritos
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import Link from "next/link";
 
 export default function ProductCard({ product }: { product: any }) {
   const { addToCart } = useCart() as any;
+  const { toggleFavorite, isFavorite } = useFavorites(); // Pegando as funções de favoritos
   const [isAnimating, setIsAnimating] = useState(false);
 
   if (!product) return null;
 
   const isOutOfStock = product.stock === 0;
+  const favorited = isFavorite(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    // Impede que o clique no botão ative o Link da nova aba
     e.preventDefault();
     e.stopPropagation();
 
@@ -22,14 +24,13 @@ export default function ProductCard({ product }: { product: any }) {
     setIsAnimating(true);
     addToCart(product);
     
-    // Tempo da animação voadora antes de resetar
     setTimeout(() => setIsAnimating(false), 800);
   };
 
   return (
     <div className={`group relative bg-white rounded-[32px] p-4 transition-all duration-500 border border-gray-100 ${isOutOfStock ? "opacity-70" : "hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)]"}`}>
       
-      {/* 1. ANIMAÇÃO VOADORA (FLY-TO-CART) */}
+      {/* ANIMAÇÃO DE ADICIONAR AO CARRINHO (PLUS VOADOR) */}
       <AnimatePresence>
         {isAnimating && (
           <motion.div
@@ -51,12 +52,36 @@ export default function ProductCard({ product }: { product: any }) {
         )}
       </AnimatePresence>
 
-      {/* Badges de Status / PRAZO DE ENVIO */}
+      {/* BOTÃO DE FAVORITOS (CORAÇÃO) - ESTILO MARCA PREMIUM */}
+      <button 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleFavorite(product);
+        }}
+        className="absolute top-6 right-6 z-30 p-3 bg-white/40 backdrop-blur-xl rounded-full border border-white/20 shadow-sm transition-all duration-300 hover:scale-110 active:scale-90 group/heart"
+      >
+        <motion.svg 
+          animate={{ scale: favorited ? [1, 1.3, 1] : 1 }}
+          transition={{ duration: 0.3 }}
+          xmlns="http://www.w3.org/2000/svg" 
+          width="18" 
+          height="18" 
+          viewBox="0 0 24 24" 
+          fill={favorited ? "#ef4444" : "none"} 
+          stroke={favorited ? "#ef4444" : "currentColor"} 
+          strokeWidth="2.5" 
+          className="transition-colors duration-300"
+        >
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+        </motion.svg>
+      </button>
+
+      {/* BADGES (ENVIO, ESGOTADO, OFERTA) */}
       <div className="absolute top-6 left-6 z-20 flex flex-col gap-2">
         {isOutOfStock ? (
           <span className="bg-zinc-900 text-white text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Esgotado</span>
         ) : product.isPreOrder ? (
-          /* SELO DE 5 DIAS */
           <span className="bg-black text-white text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
             📦 Envio em 5 dias
           </span>
@@ -65,9 +90,7 @@ export default function ProductCard({ product }: { product: any }) {
         ) : null}
       </div>
 
-      {/* ÁREA CLICÁVEL - ABRE EM NOVA ABA */}
       <Link href={`/product/${product.id}`} target="_blank" rel="noopener noreferrer">
-        {/* Imagem do Produto */}
         <div className="relative aspect-square overflow-hidden rounded-[24px] bg-[#f7f7f7] mb-4">
           <img
             src={product?.image}
@@ -81,7 +104,6 @@ export default function ProductCard({ product }: { product: any }) {
           )}
         </div>
 
-       
         <div className="space-y-1 px-1">
           <span className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em]">Original Street</span>
           <h3 className="font-bold text-zinc-800 text-sm md:text-base leading-tight truncate uppercase italic tracking-tighter hover:text-orange-500 transition-colors">
@@ -90,6 +112,7 @@ export default function ProductCard({ product }: { product: any }) {
         </div>
       </Link>
 
+      {/* ÁREA DE PREÇO E BOTÃO COMPRAR */}
       <div className="px-1">
         <div className="flex items-center justify-between pt-3">
           <div className="flex flex-col">

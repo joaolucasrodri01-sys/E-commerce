@@ -10,7 +10,7 @@ const firebaseConfig = {
   appId: "1:563327599912:web:8ce4a79da018c8a24bfc1d"
 };
 
-// Inicializa o app apenas uma vez
+
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Exporta o banco de dados

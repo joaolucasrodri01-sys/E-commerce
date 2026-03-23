@@ -28,7 +28,7 @@ export default function Cart({ isOpen, onClose }: any) {
                 <p className="font-black uppercase italic text-xs">O teu carrinho está vazio</p>
               </div>
             ) : (
-              // SOLUÇÃO DO ERRO: Combinamos item.id com o index para garantir key única
+              
               cart.map((item: any, index: number) => {
                 const itemKey = item.tempId || `${item.id}-${item.selectedColor}-${item.selectedSize}-${index}`;
                 
@@ -61,7 +61,7 @@ export default function Cart({ isOpen, onClose }: any) {
                       </div>
                     </div>
                     
-                    {/* BOTÃO DE LIXO MODERNIZADO */}
+                  
                     <button 
                       onClick={() => removeFromCart(item.tempId || item.id)}
                       className="absolute -top-1 -right-1 w-8 h-8 bg-white border border-zinc-100 rounded-full flex items-center justify-center text-zinc-300 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:text-red-500 hover:scale-110 active:scale-90 z-10"
@@ -108,7 +108,7 @@ export default function Cart({ isOpen, onClose }: any) {
                   <span className="text-4xl">⚡</span>
                 </div>
                 <p className="text-[10px] font-black uppercase text-zinc-400 italic px-10 leading-relaxed text-center">
-                  O QR Code será gerado após a confirmação do pedido.
+              
                 </p>
               </div>
             )}

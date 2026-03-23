@@ -5,8 +5,7 @@
   --foreground: #171717;
 }
 
-/* REMOVEMOS O BLOCO @media (prefers-color-scheme: dark) */
-/* Isso garante que o site não mude de cor sozinho */
+
 
 body {
   background: var(--background);
@@ -16,7 +15,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ajuste para garantir que o Carrinho sempre tenha fundo branco */
 .cart-panel {
   background-color: #ffffff !important;
   color: #171717 !important;

@@ -1,5 +1,5 @@
 export const allProducts = [
-  // --- TÊNIS ---
+
   { 
     id: "t1", name: "Nike Air Max 270", price: 899.90, category: "tenis", 
     image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800", 
@@ -25,7 +25,6 @@ export const allProducts = [
     sizes: ["40", "42"], stock: 4, isPreOrder: true 
   },
   
-  // --- ROUPAS (MASCULINO/UNISSEX) ---
   { 
     id: "r1", name: "Moletom Oversized Black", price: 249.90, category: "roupas", 
     image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800", 
@@ -41,7 +40,6 @@ export const allProducts = [
     sizes: ["M", "G"], stock: 15 
   },
 
-  // --- FEMININO ---
   { 
     id: "f1", name: "Top Nike Swoosh High", price: 189.90, category: "feminino", 
     image: "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800", 
@@ -64,7 +62,6 @@ export const allProducts = [
     sizes: ["P", "M", "G"], stock: 5, isPreOrder: true 
   },
   
-  // --- CALÇAS ---
   { 
     id: "c1", name: "Calça Cargo Street", price: 189.90, category: "calcas", 
     image: "https://down-br.img.susercontent.com/file/br-11134207-7r98o-lw2v87un42nqea", 
@@ -73,7 +70,7 @@ export const allProducts = [
     sizes: ["40", "42"], stock: 8 
   },
   
-  // --- ACESSÓRIOS ---
+ 
   { 
     id: "a1", name: "Boné Snapback NY", price: 99.00, category: "acessorios", 
     image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=800", 

@@ -15,7 +15,6 @@ export default function ProductDetails() {
   const [currentImage, setCurrentImage] = useState(product?.image);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Troca a imagem principal quando o usuário clica em uma cor
   useEffect(() => {
     const colorData = product?.colors?.find(c => c.name === selectedColor);
     if (colorData?.image) {
@@ -40,14 +39,12 @@ export default function ProductDetails() {
       selectedColor
     });
 
-    // Remove a animação após 1 segundo
     setTimeout(() => setIsAnimating(false), 1000);
   };
 
   return (
     <main className="min-h-screen bg-white pt-24 pb-20 overflow-hidden">
       
-      {/* ANIMAÇÃO VOADORA (FLY-TO-CART) */}
       <AnimatePresence>
         {isAnimating && (
           <motion.div
@@ -66,7 +63,7 @@ export default function ProductDetails() {
         {/* LADO ESQUERDO: IMAGEM DINÂMICA */}
         <div className="relative group bg-[#f7f7f7] rounded-[48px] p-12 aspect-square flex items-center justify-center">
           <motion.img 
-            key={currentImage} // Faz um efeito de fade quando a imagem muda
+            key={currentImage}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             src={currentImage} 
@@ -74,7 +71,6 @@ export default function ProductDetails() {
           />
         </div>
 
-        {/* LADO DIREITO: INFOS */}
         <div className="flex flex-col justify-center space-y-10">
           <div className="space-y-2">
             <span className="text-orange-500 font-black uppercase tracking-[0.4em] text-[10px] italic">Original Street Drop</span>
@@ -87,7 +83,6 @@ export default function ProductDetails() {
             R$ {product.price.toFixed(2)}
           </div>
 
-          {/* CORES COM TROCA DE IMAGEM */}
           <div className="space-y-4">
             <p className="font-black uppercase text-[10px] text-zinc-400 italic tracking-widest">
               Cores Disponíveis: <span className="text-black">{selectedColor}</span>
@@ -106,7 +101,7 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* TAMANHOS */}
+    
           <div className="space-y-4">
             <p className="font-black uppercase text-[10px] text-zinc-400 italic tracking-widest">Selecione o tamanho</p>
             <div className="flex flex-wrap gap-3">
@@ -126,7 +121,7 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* BOTÃO DE ADICIONAR */}
+         
           <button 
             onClick={handleAdd}
             className="group relative w-full bg-zinc-900 text-white py-8 rounded-[32px] font-black uppercase italic tracking-widest text-sm overflow-hidden hover:bg-orange-600 transition-all active:scale-95"

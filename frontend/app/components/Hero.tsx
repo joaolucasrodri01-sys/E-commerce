@@ -6,7 +6,7 @@ export default function Hero() {
         className="absolute inset-0 w-full h-full object-cover"
         alt="Banner"
       />
-      <div className="absolute inset-0 bg-black/40" /> {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/40" /> 
       <div className="relative z-10 text-center px-4">
         <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-4">
           Nova Coleção <br/> <span className="text-orange-500">Street 2026</span>

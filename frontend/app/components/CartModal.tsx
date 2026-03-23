@@ -14,7 +14,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay com Blur mais elegante */}
+          
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
@@ -41,7 +41,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
               </button>
             </div>
 
-            {/* Lista de Produtos */}
+            
             <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
               {cart.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center opacity-20">
@@ -68,7 +68,7 @@ export default function Cart({ isOpen, onClose }: CartProps) {
               )}
             </div>
 
-            {/* Footer de Impacto */}
+           
             {cart.length > 0 && (
               <div className="p-8 bg-zinc-50/50 border-t border-zinc-100">
                 <div className="flex justify-between items-end mb-8">

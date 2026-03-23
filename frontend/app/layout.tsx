@@ -1,20 +1,24 @@
 import "./globals.css";
 import { CartProvider } from "./context/CartContext";
+import { FavoritesProvider } from "./context/FavoritesContext"; // 1. Importação adicionada
 import Navbar from "./components/Navbar";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-br">
-      {/* Removemos o bg-gray-50 daqui para não dar conflito com o branco do carrinho */}
       <body className="antialiased min-h-screen bg-white">
-        <CartProvider>
-          <Navbar />
-          {/* O segredo: Tiramos o max-w e px daqui. 
-              O Carrinho precisa estar fora de qualquer container limitado. */}
-          <main>
-            {children}
-          </main>
-        </CartProvider>
+        {/* 2. O FavoritesProvider deve envolver tudo para que a Navbar e os Cards funcionem */}
+        <FavoritesProvider>
+          <CartProvider>
+            
+            <Navbar />
+            
+            <main>
+              {children}
+            </main>
+
+          </CartProvider>
+        </FavoritesProvider>
       </body>
     </html>
   );

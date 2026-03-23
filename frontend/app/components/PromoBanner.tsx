@@ -9,7 +9,7 @@ export default function PromoBanner() {
   useEffect(() => {
     const fetchBanner = async () => {
       try {
-        // CAMINHO EXATO: Banco -> Coleção "promoBanner" -> Documento "promoBanner"
+        
         const docRef = doc(db, "promoBanner", "promoBanner");
         const docSnap = await getDoc(docRef);
 

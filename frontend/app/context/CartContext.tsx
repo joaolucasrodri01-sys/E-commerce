@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo } from "
 interface Product {
   id: string;
   name: string;
-  price: number; // Certifique-se que no seu data/products.ts o preço é NÚMERO
+  price: number; 
   image: string;
 }
 
@@ -21,13 +21,13 @@ const CartContext = createContext<CartContextData>({} as CartContextData);
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<Product[]>([]);
 
-  // Carrega o carrinho do navegador ao iniciar
+
   useEffect(() => {
     const saved = localStorage.getItem("@OriginalStreet:cart");
     if (saved) setCart(JSON.parse(saved));
   }, []);
 
-  // Salva no navegador sempre que mudar
+
   useEffect(() => {
     localStorage.setItem("@OriginalStreet:cart", JSON.stringify(cart));
   }, [cart]);
@@ -42,7 +42,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const clearCart = () => setCart([]);
 
-  // CÁLCULO DO TOTAL CORRIGIDO
+  
   const cartTotal = useMemo(() => {
     return cart.reduce((acc, item) => {
       // Força a conversão para número para evitar o R$ 0,00 ou NaN
